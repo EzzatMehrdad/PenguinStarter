@@ -7,7 +7,7 @@ body{text-align: center; }
             border: 1px solid black; 
         } 
   
-        h1 { 
+        h2 { 
             text-align: center; 
             color: #006600; 
             font-size: xx-large; 
@@ -26,9 +26,12 @@ body{text-align: center; }
             font-weight: bold; 
             border: 1px solid black; 
             padding: 10px; 
-            text-align: center; 
+            text-align: center; height: 20px;  
         } 
-  
         td { 
-            font-weight: lighter; 
-        } 
+            font-weight: lighter; height: 10px; width: 20px; 
+        }
+#pic{ width: 50px; height: 10px;
+    
+    
+}

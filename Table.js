@@ -1,90 +1,186 @@
-var studentPromise=d3.json("classData.json"); 
-
-
-var getPics=function(penquin)
+var setTitle=function (msg)
 {
-    return penquin.picture;
+    d3.select("h2")
+    .text(msg);
 }
 
-var getMean=function(quiz)
-          {
-              var getQuiz=function(quiz)
-              
-              {
-                  return quiz.grade
-              }
-                  var meanArray=quiz.quizes.map(getQuiz)
-                  return d3.mean(meanArray); 
-          }
 
-var getHome=function(homework)
-          {
-              var getGrade=function(homework)
-              
-              {
-                  return homework.grade   
-              }
-                  var meanArray=homework.homework.map(getGrade)
-                  return d3.mean(meanArray); 
-          }
-var getTest=function(test)
-    {
-    
-    var getGrade=function(test)
-    {
-        return test.grade
-        
-    }
-    
-    var meanTest=test.test.map(getGrade)
-    return d3.mean(meanTest);
-}
-
-var getFinal=function(student)
-
+var getImage=function(bStudent)
 {
-    var getGrade=function(student)
-    {
-    return student.grade;
+    console.log 
+    return "imgs/"+bStudent.picture; 
+}; 
+
+var getGrade=function(john){
+
+    return john.grade; 
+    
 }
 
- var answer=student.final.map(getFinal); 
+var getQuizeAverage=function(bStudent)
+{
+    var Qstut=bStudent.quizes; 
+    
+    var ScoreQ=Qstut.map(getGrade); 
+    var avg=d3.mean(ScoreQ);
+    return avg.toFixed(2);     
 }
+
+var getTestAvg=function(bStudent){
+
+     var Tstud=bStudent.test; 
+    var ScoreT=Tstud.map(getGrade); 
+    var avg=d3.mean(ScoreT); 
+    return avg.toFixed(2);};
+
+var getHmwAvg=function(bStudent){
+    
+    var Hstud=bStudent.homework; 
+    var HomeScore=Hstud.map(getGrade);
+    var avg=d3.mean(HomeScore); 
+    return avg.toFixed(2);};
+
+var getFinalgrade=function(bStudent){
+
+     return bStudent.final[0].grade; 
+}
+    
+
+var penguinPromise=d3.json("classData.json"); 
 
     
-var successFCN = function(student)
+var successFCN = function(students){
+    
+    console.log("Student Datas", students);
+    setTitle("Table of Students");
+    drawTable(students);
+    initHeaders(students);
+}
+
+   var failFCN = function(errorMsg)
   {
+    console.log(errorMSG);
+  };
+
+   
+var drawTable=function(students){
     
-  
-    var rows=d3.select("tbody")
+    var rows=d3.select("#fulltable tbody")
     .selectAll("tr")
-    .data(student)
+    .data(students)
     .enter()
-    .append("tr")
+    .append("tr"); 
     
     rows.append("td")
     .append("img")
-    .attr("src", getPics);
+    .attr("class", "pic")
+    .attr("src", getImage);
     
     rows.append("td")
-    .text(getMean);
+    .append("td")
+    .attr("class", "quiz")
+    .text(getQuizeAverage);
     
     rows.append("td")
-    .text(getHome); 
+    .append("td")
+    .attr("class", "home")
+    .text(getHmwAvg);
     
     rows.append("td")
-      .text(getTest);
-      
+    .append("td")
+    .attr("class", "test")
+    .text(getTestAvg);
+    
     rows.append("td")
-      .text(getFinal);
-      
-  }
-   
+    .append("td")
+    .attr("class", "final")
+    .text(getFinalgrade); };
+
+var clearTable=function(){
+    
+    d3.selectAll("#fulltable tbody tr")
+    .remove();
+}
+              
+
+var initHeaders=function (students) {
+    d3.select("#quiz")
+    .on("click", function() {
+        console.log("clicked quiz"); 
+        students.sort(function(a,b){
+            var av1=getQuizeAverage(a);
+            var av2=getQuizeAverage(b);
+            if (av1<av2) {return -1;}
+            else if (av1==av2) {return 0;}
+            else {return 1;}
+            
+        });
+        
+        clearTable();
+        drawTable(students);
+        d3.selectAll(".quiz")
+            .attr("class", "selected");
+        
+    });
+  d3.select("#home")
+    .on("click", function() {
+        console.log("clicked home"); 
+        students.sort(function(a,b){
+            var av1=getQuizeAverage(a);
+            var av2=getQuizeAverage(b);
+            if (av1<av2) {return -1;}
+            else if (av1==av2) {return 0;}
+            else {return 1;}
+            
+        });
+        
+        clearTable();
+        drawTable(students);
+        d3.selectAll(".home")
+            .attr("class", "selected");
+        
+    });
+    
+    d3.select("#test")
+    .on("click", function() {
+        console.log("clicked test"); 
+        students.sort(function(a,b){
+            var av1=getQuizeAverage(a);
+            var av2=getQuizeAverage(b);
+            if (av1<av2) {return -1;}
+            else if (av1==av2) {return 0;}
+            else {return 1;}
+            
+        });
+        
+        clearTable();
+        drawTable(students);
+        d3.selectAll(".test")
+            .attr("class", "selected");
+        
+    });
+    
+    d3.select("#final")
+    .on("click", function() {
+        console.log("clicked final"); 
+        students.sort(function(a,b){
+            var av1=getQuizeAverage(a);
+            var av2=getQuizeAverage(b);
+            if (av1<av2) {return -1;}
+            else if (av1==av2) {return 0;}
+            else {return 1;}
+            
+        });
+        
+        clearTable();
+        drawTable(students);
+        d3.selectAll(".final")
+            .attr("class", "selected");
+        
+    });
+    
+}
+     penguinPromise.then(successFCN,failFCN);
 
 
-      var failFCN = function(errorMsg)
-  {
-    console.log("You Got it wrong", errorMSG);
-  }
-    
-     studentPromise.then(successFCN,failFCN);
+  
